@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+        <title>Instructions</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div>
+            <h1>Introduction</h1>
+            <p>
+                Deep within a maze of caverns and twisting tunnels lives a creature 
+                known as the Wumpus. Protected by giant bats and pits of slime, the 
+                Wumpus feeds on unwary visitors to its cavern.
+            </p>
+            <p>
+                You are the daring hunter who tracks the Wumpus to its lair! Armed 
+                with a single arrow, you explore the maze of caverns, searching for 
+                clues to tell you where the Wumpus is hiding. Once you think you've 
+                found the Wumpus, you fire your arrow into its cavern. But be careful!
+                If you choose the wrong cavern, you will be the next victim of the 
+                Wumpus.
+            </p>
+            <h1>Exploring The Maze</h1>
+            <p>
+                You explore the maze by moving the hunter through openings in the maze.
+                You can move up, down, left, or right by pressing the appropriate 
+                arrow key.
+            </p>
+            <p>
+                Adding to the excitement of the game is the computer's "wrap-around" 
+                feature. If you move the hunter off the edge of the maze, it reappears 
+                at the opposite side. The screen "wraps around" both horizontally and 
+                vertically to connect all the caverns, helping you imagine 
+                that you are in a three-dimensional maze.
+            </p>
+
+            <h1>Tracking Down The Wumpus</h1>
+            <p>
+                The Wumpus makes its lair in one of the caverns in the maze. You know 
+                you're getting near the Wumpus when you enter a cavern with bloodspots
+                (shown on the screen as a large red dot in the cavern). These dots 
+                appear in all caverns within two caverns of the Wumpus.
+            </p>
+            <p>
+                Here's a hunting tip: If you are in a spotted cavern that is connected
+                to a clear cavern (no red dot), you can explore one cavern further 
+                before you risk entering the Wumpus' cavern. (That's because all 
+                caverns within two caverns of the Wumpus have a red dot.)
+            </p>
+            <p>
+                The trick to finding the Wumpus is to determine which cavern is more 
+                than two caverns away from all unspotted caverns. That cavern is the 
+                Wumpus' lair. NEVER enter the Wumpus' lair, or else you lose the game.
+            </p>
+            <h1>Caution! Slime Pit</h1>
+            <p>
+                When you enter a cavern that has green walls instead of blue walls, 
+                you are approaching a slime pit. Slime pits are vast pools of stagnant 
+                water that fill a cavern. If you enter a slime pit cavern, you fall in
+                and lose the game.
+            </p>
+            <p>
+                Slime pits can usually be avoided, since all caverns within one cavern
+                of a pit have green walls. But move carefully - there are two slime 
+                pits in the maze, and sometimes they are right next to each other.
+            </p>
+            <h1>Do Not Disturb The Bats</h1>
+            <p>
+                Some of the caverns in the maze are inhabited by very large bats. The 
+                first time you enter a cavern containing bats, a bat symbol appears in 
+                the cavern. The bats know that you are there, but they ignore you for 
+                now.
+            </p>
+            <p>
+                If you later reenter a cavern with bats,they pick you up and carry you off to somewhere in the 
+                maze..., a slime pit, the Wumpus' lair, or even the cavern where your 
+                flight began. Then they choose a new place to live.
+            </p>
+            <p>
+            The bats may set you in either a mapped or unmapped area of the maze. 
+             But if the bats drop you in a slime pit or 
+            the Wumpus' lair, the game is over.
+            </p>
+            <h1>Once The Wumpus Is Located</h1>
+            <p>
+                When you think you know where the Wumpus is, it's time to fire your 
+                arrow. (You should be in a cavern that connects to the 
+                Wumpus' lair.) Press Q to indicate that you are ready to fire. The 
+                hunter figure draws its bow. Then press an arrow key to 
+                direct the arrow into the tunnel that you think leads to the Wumpus. 
+                The arrow follows the tunnel to the next cavern.
+            </p>
+            <p>
+                If the cavern you fire into is the Wumpus' lair, you win! If you are 
+                wrong, the Wumpus hears the arrow and comes looking for you. You only 
+                have one arrow, so if you miss you lose the game.
+            </p>
+            <p>
+                Note: If you change your mind and decide not to shoot after you've 
+                pressed Q, simply press Q again.
+            </p>
+            <h1>At The Hunt's End</h1>
+            <p>
+                The hunt is over when you fire your arrow, fall into a slime pit, or 
+                enter the Wumpus' lair. If you win, press the button at the top of the screen to submit your 
+                score (time and number of moves).
+            </p>
+        </div>
+        <h:form>
+            <h:commandButton id ="retGame" value="Return to Game" action="game" />
+        </h:form>
+    </body>
+</html>

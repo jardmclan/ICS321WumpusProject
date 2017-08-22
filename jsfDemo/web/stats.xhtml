@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+        <!--<h:outputStylesheet name="css/stylesheet.css" />-->
+        <script type="text/javascript">
+            function verify(){
+                if (!#{VerifyLogin.response}) {
+                    var element = document.getElementById("board");
+                    element.remove();
+                    window.location.href="loginPage.xhtml";
+                    window.alert("Invalid Login");
+                }
+                if("#{AttemptBean.stat}" === "time") {
+                    document.getElementById('change2:changeOrder').value = 'Sort by Moves';
+                }
+                if(#{AttemptBean.personal}) {
+                    document.getElementById('change1:changeView').value = 'View Global Records';
+                } 
+            }
+        </script>
+        
+        <title>Leaderboard</title>
+    </head>
+    <body id="board" style="background-color: black" onload="verify()">
+        <h:form id="change1">
+            <h:inputHidden id="personal" value="#{AttemptBean.personal}" />
+            <h:commandButton id ="changeView" value="View Personal Records" onclick="setPersonal()">
+                <f:setPropertyActionListener id="username" target="#{AttemptBean.username}" value="#{VerifyLogin.username}" />
+            </h:commandButton>
+        </h:form>
+        <h:form id="change2">
+            <h:inputHidden id="sort" value="#{AttemptBean.stat}" />
+            <h:commandButton id ="changeOrder" value="Sort by Time" onclick="setSort()" />
+        </h:form>
+        <h:form>
+            <h:commandButton id ="retGame" value="Return to Game" action="game" />
+        </h:form>
+        <script type="text/javascript">
+            function setPersonal() {
+                document.getElementById('change1:personal').value = !#{AttemptBean.personal};
+            }
+            function setSort() {
+                if("#{AttemptBean.stat}" === 'moves') {
+                    document.getElementById('change2:sort').value = 'time';
+                }
+                else {
+                    document.getElementById('change2:sort').value = 'moves';
+                }
+            }
+        </script>
+
+        <div id="center">
+            <div id="b-header">
+                <h1-lb style="color: #af111c">Leader Board</h1-lb>
+            </div>
+            <h:dataTable value="#{AttemptBean.getAttemptList()}" var="c"
+                         styleClass="ordertable"
+                         headerClass="order-table-header"
+                         rowClasses="order-table-odd-row,order-table-even-row"
+                         columnClasses="column1,column2,column3"
+                         frame="border"
+                         style="color: #000000; font-family: impact; font-size: 32px">
+
+                <h:column>
+                    <f:facet name="header">
+                        Username
+                    </f:facet>
+                        #{c.username}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        Number of Moves
+                    </f:facet>
+                    #{c.moves}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        Time
+                    </f:facet>
+                    #{c.time}
+                </h:column>
+
+            </h:dataTable>
+        </div>
+    </body>
+</html>

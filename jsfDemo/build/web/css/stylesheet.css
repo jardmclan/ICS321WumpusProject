@@ -1,0 +1,183 @@
+
+/* styles for JSF 2.0 Introduction project */
+
+body {
+    font-family: Helvetica, sans-serif;
+    background-color: #f9f9f9;
+    margin: 10px;
+    color: #444;
+}
+
+h1-lb {
+    font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif; 
+    font-size:  76px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    color: #D20005;
+}
+
+.column1 { width: 2000px; }
+.column2 { width: 2000px; }
+.column3 { width: 2000px; }
+
+.order-table{   
+	border-collapse:collapse;
+}
+ 
+.order-table-header{
+	text-align:center;
+	background:none repeat scroll 0 0 #E5E5E5;
+	border-bottom:1px solid #BBBBBB;
+	padding:16px;
+}
+ 
+.order-table-odd-row{
+	text-align:center;
+	background:none repeat scroll 0 0 #AF111C;
+	border-top:1px solid #BBBBBB;
+}
+ 
+.order-table-even-row{
+	text-align:center;
+	background:none repeat scroll 0 0 #FF011C;
+	border-top:1px solid #BBBBBB;
+}
+
+#logout {
+    position: absolute;
+    right: 20px;
+}
+
+#stats {
+    position: absolute;
+    top: 0px;
+    left: 20px;
+}
+
+#top {	
+  position: relative;	
+  width: 100%;	
+  height: 20px;
+  margin: 0 auto;
+}
+
+#b-header {	
+  position: relative;	
+  width: 75%;	
+  height: 100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stats {
+    position: absolute;
+    left: 50%;
+    width: 100px;
+    height: 20px;
+    left: -50px;
+    top: 10px;
+}
+
+h4 { margin: 10px 0 }
+
+.smallText {
+    font-size: small;
+    text-align: center;
+    color: #777;
+    margin: 5px 0 15px;
+}
+
+#instr {
+    text-align: center;
+}
+
+label {
+    font-size: small;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+input { margin: 5px }
+
+#mainContainer {
+    width: 500px;
+    height: 250px;
+    margin: 40px;
+}
+
+#left { float: left }
+#center
+{
+    margin: auto;
+    
+}
+#right { float: right }
+
+#top { float: top }
+#bottom { float: bottom }
+
+canvas {
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#button {
+    width: 990px;
+    margin: 0 auto;
+}
+
+#main {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.subContainer {
+    margin: 10px;
+    padding: 10px;
+    width: 202px;
+    height: 202px;
+    position: relative;
+}
+
+.greyBox {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+}
+
+#squareContainer {
+    position: absolute;
+    width: 250px;
+    top: -5px;
+    left: -5px;
+}
+
+.square {
+    width: 105px;
+    height: 105px;
+    margin: 5px;
+    float: left;
+    border: 1px solid #ccc;
+}
+
+#backButton {
+    margin: 55px 79px;
+}
+
+.highlight {
+    font-size: larger;
+    color: #c00;
+}
+
+.error {
+    font-size: smaller;
+    color: #c00;
+}

@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript">
+            function verify(){
+                if (!#{VerifyLogin.response}) {
+                    var element = document.getElementById("gp");
+                    element.remove();
+                    window.location.href="loginPage.xhtml";
+                    window.alert("Invalid Login");
+                }
+            }
+            function set() {
+                #{Stats.setMoves(null)};
+                if(window.location.href.indexOf("reset") !== -1) {
+                    if(window.location.href.indexOf("blackout") !== -1) {
+                        startGame(true);
+                    }
+                    else {
+                        startGame(false);
+                    }
+                }
+            }
+        </script>
+        <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+
+        <title>Game</title>
+    </head>
+
+    <h:body id="gp" onload="set(); verify();">
+        
+        <h:form id="submitStats">
+            <h:inputHidden id="moves" value="#{Stats.moves}" />
+            <h:inputHidden id="time" value="#{Stats.time}" />
+            <h:commandButton id ="submitButton" value="Save Your Stats For This Game" action="#{Stats.addStats}" style="display: none" >
+                <f:setPropertyActionListener id="username" target="#{Stats.username}" value="#{VerifyLogin.username}" />
+            </h:commandButton>
+        </h:form>
+        <div id="top">
+            <div id="logout">
+                <h:link value='Logout' outcome='logout' style='font-size: 13px'/>
+            </div>
+            <div id="instr">
+                <h:link value='Instructions' outcome='instructions' style='font-size: 13px'/>
+            </div>
+            <div id="stats">
+                <h:link value='View Stats' outcome='stats' style='font-size: 13px'/>
+            </div>
+        </div>
+        <div id="main">
+            <div>
+                <canvas id="game" width="980" height="700" style="background: black" align="center"></canvas>
+                <div id="button">
+                    <h:button id="startGame" value="Start New Normal Game" onclick="startGame(false); return false;" />
+                    <h:button id="blackout" value="Start New Blackout Game" onclick="startGame(true); return false;" />
+                </div>
+                <script type="text/javascript">
+                    var map = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+                    var mapSize = 34;
+                    var width = 140;
+                    var moves = 0;
+                    var gameOver = 0;
+                    var d1 = 5;
+                    var d2 = 7;
+                    var reset = false;
+                    var timer;
+                    
+                    function makeCave(color, lineColor, x, y, cave, person, bat, fire, blackout) {
+                        var canvas = document.getElementById('game');
+                        var context = canvas.getContext('2d');
+                        var context2 = canvas.getContext('2d');
+                        var context3 = canvas.getContext('2d');
+                        var context4 = canvas.getContext('2d');
+                        var context5 = canvas.getContext('2d');
+                        var context6 = canvas.getContext('2d');
+                        var context7 = canvas.getContext('2d');
+                        var context8 = canvas.getContext('2d');
+                        var color = color;
+                        var lineColor = lineColor;
+                        var x = x;
+                        var y = y;
+                        var radius = 50;
+                        if(blackout) {
+                            context8.beginPath();
+                            context8.lineTo(x + width/2, y - width/2);
+                            context8.lineTo(x + width/2, y + width/2);
+                            context8.lineTo(x - width/2, y + width/2);
+                            context8.lineTo(x - width/2, y - width/2);
+                            context8.lineTo(x + width/2, y - width/2);
+                            context8.lineWidth = 3;
+                            context8.strokeStyle = 'black';
+                            context8.fillStyle = 'black';
+                            context8.fill();
+                            context8.stroke();
+                        }
+                        else {
+                            if(cave) {
+                                context.beginPath();
+                                context.arc(x, y, radius, 0, 2*Math.PI, true);
+                                context.fillStyle = color;
+                                context.fill();
+                                context.lineWidth = 20;
+                                context.strokeStyle = lineColor;
+                                context.stroke();
+                                context2.beginPath();
+                                context2.lineTo(x - 15, y + width/2);
+                                context2.lineTo(x + 15, y + width/2);
+                                context2.lineTo(x + 15, y - width/2);
+                                context2.lineTo(x - 15, y - width/2);
+                                context2.lineTo(x - 15, y + width/2);
+                                context2.lineWidth = 1;
+                                context2.strokeStyle = color;
+                                context2.fillStyle = color;
+                                context2.fill();
+                                context2.stroke();
+                                context3.beginPath();
+                                context3.lineTo(x + width/2, y - 15);
+                                context3.lineTo(x + width/2, y + 15);
+                                context3.lineTo(x - width/2, y + 15);
+                                context3.lineTo(x - width/2, y - 15);
+                                context3.lineTo(x + width/2, y - 15);
+                                context3.lineWidth = 1;
+                                context3.strokeStyle = color;
+                                context3.fillStyle = color;
+                                context3.fill();
+                                context3.stroke();
+                            }
+                            if(bat) {
+                                context4.beginPath();
+                                context4.lineTo(x - 40, y - 5);
+                                context4.lineTo(x - 20, y - 20);
+                                context4.lineTo(x, y - 5);
+                                context4.lineTo(x + 20, y - 20);
+                                context4.lineTo(x + 40, y - 5);
+                                context4.lineWidth = 7;
+                                context4.strokeStyle = 'black';
+                                context4.fillStyle = 'black';
+                                context4.fill();
+                                context4.stroke();
+                            }
+                            if(person) {
+                                context5.beginPath();
+                                context5.arc(x, y, 4, 0, 2*Math.PI, true);
+                                context5.lineWidth = 7;
+                                context5.fillStyle = 'black';
+                                context5.strokeStyle = 'black';
+                                context5.fill();
+                                context5.stroke();
+                                if(!fire) {
+                                    context6.beginPath();
+                                    context6.lineTo(x, y + 5);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x + 10, y + 35);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x - 10, y + 35);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x - 10, y + 15);
+                                    context6.lineWidth = 7;
+                                    context6.strokeStyle = 'black';
+                                    context6.fillStyle = 'black';
+                                    context6.fill();
+                                    context6.stroke();
+                                }
+                                else {
+                                    context6.beginPath();
+                                    context6.lineTo(x, y + 5);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x + 10, y + 35);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x - 10, y + 35);
+                                    context6.lineTo(x, y + 25);
+                                    context6.lineTo(x, y + 12);
+                                    context6.lineTo(x + 22, y + 10);
+                                    context6.lineTo(x + 20, y);
+                                    context6.lineTo(x + 22, y + 10);
+                                    context6.lineTo(x + 20, y + 23);
+                                    context6.lineWidth = 7;
+                                    context6.strokeStyle = 'black';
+                                    context6.stroke();
+                                    context7.beginPath();
+                                    context7.lineTo(x, y + 12);
+                                    context7.lineTo(x + 23, y);
+                                    context7.lineTo(x, y + 12);
+                                    context7.lineTo(x + 23, y + 23);
+                                    context7.lineWidth = 3;
+                                    context7.strokeStyle = 'black';
+                                    context7.stroke();
+                                }
+                            }
+                        }
+                    }
+                    
+//                    function makeTunnel() {
+//                        
+//                    }
+                    function generateMap() {
+                        var wumpus = Math.floor((Math.random() * mapSize) + 1);
+                        var pit1 = Math.floor((Math.random() * mapSize) + 1);
+                        var pit2 = Math.floor((Math.random() * mapSize) + 1);
+                        var superBat1 = Math.floor((Math.random() * mapSize) + 1);
+                        var superBat2 = Math.floor((Math.random() * mapSize) + 1);
+                        while(pit2 === pit1) {
+                            pit2 = Math.floor((Math.random() * mapSize) + 1);
+                        }
+                        while(superBat1 === wumpus || superBat1 === pit1 || superBat1 === pit2) {
+                            superBat1 = Math.floor((Math.random() * mapSize) + 1);
+                        }
+                        while(superBat2 === wumpus || superBat2 === pit1 || superBat2 === pit2 || superBat2 === superBat1) {
+                            superBat2 = Math.floor((Math.random() * mapSize) + 1);
+                        }
+                        map[(Math.floor(wumpus/d2))%d1][(wumpus%d2+1)%d2] = 4;
+                        map[(Math.floor(wumpus/d2))%d1][(wumpus%d2+2)%d2] = 4;
+                        map[(Math.floor(wumpus/d2))%d1][(d2+wumpus%d2-1)%d2] = 4;
+                        map[(Math.floor(wumpus/d2))%d1][(d2+wumpus%d2-2)%d2] = 4;
+                        map[(Math.floor(wumpus/d2)+1)%d1][(wumpus%d2)%d2] = 4;
+                        map[(Math.floor(wumpus/d2)+2)%d1][(wumpus%d2)%d2] = 4;
+                        map[(Math.floor(d1+wumpus/d2)-1)%d1][(wumpus%d2)%d2] = 4;
+                        map[(Math.floor(d1+wumpus/d2)-2)%d1][(wumpus%d2)%d2] = 4;
+                        map[(Math.floor(wumpus/d2)+1)%d1][(wumpus%d2+1)%d2] = 4;
+                        map[(Math.floor(wumpus/d2)+1)%d1][(d2+wumpus%d2-1)%d2] = 4;
+                        map[(Math.floor(d1+wumpus/d2)-1)%d1][(wumpus%d2+1)%d2] = 4;
+                        map[(Math.floor(d1+wumpus/d2)-1)%d1][(d2+wumpus%d2-1)%d2] = 4;
+                        map[Math.floor(pit1/d2)][pit1%d2] = 2;
+                        
+                        if (map[(Math.floor(pit1/d2))%d1][(pit1%d2+1)%d2] === 4) {
+                            map[(Math.floor(pit1/d2))%d1][(pit1%d2+1)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit1/d2))%d1][(pit1%d2+1)%d2] = 5;
+                        }
+                        if (map[(Math.floor(pit1/d2))%d1][(d2+pit1%d2-1)%d2] === 4) {
+                            map[(Math.floor(pit1/d2))%d1][(d2+pit1%d2-1)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit1/d2))%d1][(d2+pit1%d2-1)%d2] = 5;
+                        }
+                        if (map[(Math.floor(pit1/d2)+1)%d1][(pit1%d2)%d2] === 4) {
+                            map[(Math.floor(pit1/d2)+1)%d1][(pit1%d2)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit1/d2)+1)%d1][(pit1%d2)%d2] = 5;
+                        }
+                        if (map[(Math.floor(d1+pit1/d2)-1)%d1][(pit1%d2)%d2] === 4) {
+                            map[(Math.floor(d1+pit1/d2)-1)%d1][(pit1%d2)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(d1+pit1/d2)-1)%d1][(pit1%d2)%d2] = 5;
+                        }
+                        
+                        map[Math.floor(pit2/d2)][pit2%d2] = 2;
+                        
+                        if (map[(Math.floor(pit2/d2))%d1][(pit2%d2+1)%d2] === 4) {
+                            map[(Math.floor(pit2/d2))%d1][(pit2%d2+1)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit2/d2))%d1][(pit2%d2+1)%d2] = 5;
+                        }
+                        if (map[(Math.floor(pit2/d2))%d1][(d2+pit2%d2-1)%d2] === 4) {
+                            map[(Math.floor(pit2/d2))%d1][(d2+pit2%d2-1)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit2/d2))%d1][(d2+pit2%d2-1)%d2] = 5;
+                        }
+                        if (map[(Math.floor(pit2/d2)+1)%d1][(pit2%d2)%d2] === 4) {
+                            map[(Math.floor(pit2/d2)+1)%d1][(pit2%d2)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(pit2/d2)+1)%d1][(pit2%d2)%d2] = 5;
+                        }
+                        if (map[(Math.floor(d1+pit2/d2)-1)%d1][(pit2%d2)%d2] === 4) {
+                            map[(Math.floor(d1+pit2/d2)-1)%d1][(pit2%d2)%d2] = 6;
+                        }
+                        else {
+                            map[(Math.floor(d1+pit2/d2)-1)%d1][(pit2%d2)%d2] = 5;
+                        }
+                        
+                        map[Math.floor(superBat1/d2)][superBat1%d2] += 3;
+                        map[Math.floor(superBat2/d2)][superBat2%d2] += 3;
+                        
+                        map[Math.floor(wumpus/d2)][wumpus%d2] = 1;
+                    }
+                    
+                    function drawCave(i, j, person, fire, blackout) {
+                        if(map[i][j] === 0) {
+                            makeCave('white', 'blue', width*(j)+width/2, width*(i)+width/2, true, person, false, fire, blackout);
+                        }
+                        else if(map[i][j] === 1) {
+                            gameOver = 1;
+                        }
+                        else if(map[i][j] === 2) {
+                            gameOver = 2;
+                        }
+                        else if(map[i][j] === 3) {
+                            if(!fire) {
+                                map[i][j] += 7;
+                            }
+                            makeCave('white', 'blue', width*(j)+width/2, width*(i)+width/2, true, person, true, fire, blackout);
+                        }
+                        else if(map[i][j] === 4) {
+                            makeCave('red', 'blue', width*(j)+width/2, width*(i)+width/2, true, person, false, fire, blackout);
+                        }
+                        else if(map[i][j] === 5) {
+                            makeCave('white', 'green', width*(j)+width/2, width*(i)+width/2, true, person, false, fire, blackout);
+                        }
+                        else if(map[i][j] === 6) {
+                            makeCave('red', 'green', width*(j)+width/2, width*(i)+width/2, true, person, false, fire, blackout);
+                        }
+                        else if(map[i][j] === 7) {
+                            if(!fire) {
+                                map[i][j] += 7;
+                            }
+                            makeCave('red', 'blue', width*(j)+width/2, width*(i)+width/2, true, person, true, fire, blackout);
+                        }
+                        else if(map[i][j] === 8) {
+                            if(!fire) {
+                                map[i][j] += 7;
+                            }
+                            makeCave('white', 'green', width*(j)+width/2, width*(i)+width/2, true, person, true, fire, blackout);
+                        }
+                        else if(map[i][j] === 9) {
+                            if(!fire) {
+                                map[i][j] += 7;
+                            }
+                            makeCave('red', 'green', width*(j)+width/2, width*(i)+width/2, true, person, true, fire, blackout);
+                        }
+                        else {
+                            if(fire) {
+                                map[i][j] -= 7;
+                                drawCave(i, j, true, true, false);
+                            }
+                            else if(person) {
+                                var newBat = Math.floor((Math.random() * (mapSize + 1)));
+                                map[i][j] -= 10;
+                                if(map[i][j] === 4) {
+                                    makeCave('red', 'blue', width*(j)+width/2, width*(i)+width/2, true, false, false, blackout);
+                                }
+                                else if(map[i][j] === 5) {
+                                    makeCave('white', 'green', width*(j)+width/2, width*(i)+width/2, true, false, false, blackout);
+                                }
+                                else if(map[i][j] === 6) {
+                                    makeCave('red', 'green', width*(j)+width/2, width*(i)+width/2, true, false, false, blackout);
+                                }
+                                else if(map[i][j] === 0) {
+                                    makeCave('white', 'blue', width*(j)+width/2, width*(i)+width/2, true, false, false, blackout);
+                                }
+                                while(map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 1 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 2 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 3 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 7 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 8 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 9 ||
+                                        map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] === 10) {
+                                    newBat = Math.floor((Math.random() * (mapSize + 1)));
+                                }
+                                map[(Math.floor(newBat/d2))%d1][(newBat%d2)%d2] += 3;
+                                makeCave('black', 'black', width*((newBat%d2)%d2)+width/2, width*((Math.floor(newBat/d2))%d1)+width/2, false, false, true, blackout);
+                                return true;
+                            }
+                            else {
+                                map[i][j] -= 7;
+                                drawCave(i, j, false, false, blackout);
+                            }
+                        }
+                        return false;
+                    }
+                    
+
+                    function startGame(blackout) {
+                        var i = 0;
+                        var j = 0;
+                        var redraw = true;
+                        moves = 0;
+                        timer = Date.now();
+                        var fire = false;
+                        gameOver = 0;
+                        var context = document.getElementById('game').getContext("2d");
+                        context.clearRect(0, 0, 980, 700);
+                        if(reset) {
+                            if(blackout) {
+                                window.location.href="game.xhtml?reset?blackout";
+                            }
+                            else {
+                                window.location.href="game.xhtml?reset";
+                            }   
+                        }
+                        reset = true;
+                        
+                        generateMap();
+                        drawCave(i,j,true,false);
+                        window.addEventListener('keyup', function move(e) {
+                            switch (e.keyCode) {
+                                case 37:
+                                    if(fire) {
+                                        if(map[i][(d2 + j - 1)%d2] !== 1) {
+                                            gameOver = 1;
+                                        }
+                                        window.removeEventListener('keyup', move);
+                                        endGame();
+                                    }
+                                    else {
+                                        drawCave(i,j,false,false,blackout);
+                                        j = (d2 + j - 1)%d2;
+                                        moves++;
+                                        redraw = drawCave(i,j,true,false,false);
+                                        while(redraw) {
+                                            drawCave(i,j,false,false,blackout);
+                                            i = Math.floor((Math.random() * d1));
+                                            j = Math.floor((Math.random() * d2));
+                                            redraw = drawCave(i,j,true,false,false);
+                                        }
+                                        if(gameOver !== 0) {
+                                            window.removeEventListener('keyup', move);
+                                            endGame();
+                                        }
+                                    }
+                                    break;
+                                case 38:
+                                    if(fire) {
+                                        if(map[(d1 + i - 1)%d1][j] !== 1) {
+                                            gameOver = 1;
+                                        }
+                                        window.removeEventListener('keyup', move);
+                                        endGame();
+                                    }
+                                    else {
+                                        drawCave(i,j,false,false,blackout);
+                                        i = (d1 + i - 1)%d1;
+                                        moves++;
+                                        redraw = drawCave(i,j,true,false,false);
+                                        while(redraw) {
+                                            drawCave(i,j,false,false,blackout);
+                                            i = Math.floor((Math.random() * d1));
+                                            j = Math.floor((Math.random() * d2));
+                                            redraw = drawCave(i,j,true,false,false);
+                                        }
+                                        if(gameOver !== 0) {
+                                            window.removeEventListener('keyup', move);
+                                            endGame();
+                                        }
+                                    }
+                                    break;
+                                case 39:
+                                    if(fire) {
+                                        if(map[i][(d2 + j + 1)%d2] !== 1) {
+                                            gameOver = 1;
+                                        }
+                                        window.removeEventListener('keyup', move);
+                                        endGame();
+                                    }
+                                    else {
+                                        drawCave(i,j,false,false,blackout);
+                                        j = (d2 + j + 1)%d2;
+                                        moves++;
+                                        redraw = drawCave(i,j,true,false,false);
+                                        while(redraw) {
+                                            drawCave(i,j,false,false,blackout);
+                                            i = Math.floor((Math.random() * d1));
+                                            j = Math.floor((Math.random() * d2));
+                                            redraw = drawCave(i,j,true,false,false);
+                                        }
+                                        if(gameOver !== 0) {
+                                            window.removeEventListener('keyup', move);
+                                            endGame();
+                                        }
+                                    }
+                                    break;
+                                case 40:
+                                    if(fire) {
+                                        if(map[(d1 + i + 1)%d1][j] !== 1) {
+                                            gameOver = 1;
+                                        }
+                                        window.removeEventListener('keyup', move);
+                                        endGame();
+                                    }
+                                    else {
+                                        drawCave(i,j,false,false,blackout);
+                                        i = (d1 + i + 1)%d1;
+                                        moves++;
+                                        redraw = drawCave(i,j,true,false,false);
+                                        while(redraw) {
+                                            drawCave(i,j,false,false,blackout);
+                                            i = Math.floor((Math.random() * d1));
+                                            j = Math.floor((Math.random() * d2));
+                                            redraw = drawCave(i,j,true,false,false);
+                                        }
+                                        if(gameOver !== 0) {
+                                            window.removeEventListener('keyup', move);
+                                            endGame();
+                                        }
+                                    }
+                                    break;
+                                case 81:
+                                    if(fire) {
+                                        drawCave(i,j,true,false);
+                                        fire = false;
+                                    }
+                                    else {
+                                        drawCave(i,j,true,true);
+                                        fire = true;
+                                    }
+                                    break;
+                            }
+                        });
+                    }
+                    
+                    function endGame() {
+                        var context = document.getElementById('game').getContext("2d");
+                        var seconds;
+                        var minutes;
+                        var hours;
+                        var img = new Image();
+                        img.onload = function () {
+                            context.drawImage(img, 0, 0, 980, 700);
+                        };
+                        if(gameOver === 1) {
+                            img.src='WumpusEat2.png';
+                        }
+                        else if(gameOver === 2) {
+                            img.src='Pit.png';
+                        }
+                        else if(gameOver === 0) {
+                            timer = Date.now() - timer;
+                            hours = Math.floor(timer/3600000);
+                            timer -= hours*3600000;
+                            minutes = Math.floor(timer/60000);
+                            timer -= hours*60000;
+                            seconds = Math.floor(timer/1000);
+                            document.getElementById('submitStats:moves').value = moves;
+                            document.getElementById('submitStats:time').value = hours + ':' + minutes + ':' + seconds;
+                            document.getElementById('submitStats:submitButton').style.display='block';
+                            img.src='Win.png';
+                        }
+                        
+                    }
+                </script>
+
+            </div>
+        </div>
+        
+    </h:body>
+</html>
